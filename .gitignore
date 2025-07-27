@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -21,3 +22,26 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+=======
+# Bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual env
+venv/
+env/
+
+# Django stuff
+*.sqlite3
+/media/
+staticfiles/
+.env
+
+# Migrations (except __init__.py)
+**/migrations/
+!*/migrations/__init__.py
+
+# IDE/editor stuff
+.vscode/
+.idea/
+>>>>>>> 85cbca7fef5db8e52b6f9cd570980d49d3102ea7
