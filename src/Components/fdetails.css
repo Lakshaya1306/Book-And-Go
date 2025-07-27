@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.fdetails-main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 13px;
+  box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.393);
+}
+.fdetails-heading {
+  width: 100%;
+  height: 15%;
+  font-size: 25px;
+  font-weight: bold;
+  display: flex;
+  align-items: Center;
+  padding-left: 10px;
+}
+.fdetails-type {
+  width: 100%;
+  height: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.type-head {
+  font-size: 20px;
+  color: rgb(69, 69, 69);
+}
+.type-content {
+  font-size: 20px;
+  color: rgb(35, 170, 40);
+  font-weight: bold;
+}
+.base-fare {
+  display: flex;
+  align-items: baseline;
+  padding-right: 10px;
+}
+.fare-icon {
+  margin-right: 3px;
+  font-size: 18px;
+}
+.fare-icon-special {
+  margin-right: 3px;
+  font-size: 18px;
+  color: rgb(35, 170, 40);
+}
+.sign {
+  color: rgb(35, 170, 40);
+}
+.fare-content {
+  font-size: 20px;
+}
+.fare-content-special {
+  font-size: 20px;
+  color: rgb(35, 170, 40);
+}
+.taxes {
+  border-bottom: 1px solid rgb(85, 85, 85);
+}
+.sign {
+  font-size: 20px;
+  font-weight: bold;
+}
+.off {
+  height: 20%;
+  border-bottom: 1px solid rgb(85, 85, 85);
+}
+.fdetails-total {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  align-items: Center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.total-head {
+  font-size: 25px;
+}
+.total-fare {
+  display: flex;
+  align-items: baseline;
+}
+.total-fare-icon {
+  margin-right: 3px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.total-fare-content {
+  font-size: 25px;
+  font-weight: bold;
+}

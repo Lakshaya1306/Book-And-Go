@@ -1,0 +1,131 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.pdetails-main {
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-left: 20px;
+}
+.pdetails-heading {
+  margin-top: 20px;
+  width: 97%;
+  height: 12%;
+}
+.pdetails-heading1 {
+  font-weight: bold;
+  font-size: 30px;
+  margin-bottom: 3px;
+}
+.pdetails-heading2 {
+  color: rgb(92, 92, 92);
+  font-size: 18px;
+}
+.pdetails-notice {
+  width: 97%;
+  height: 8%;
+  background-color: rgb(255, 254, 229);
+  border-radius: 10px;
+  display: flex;
+  align-items: Center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.pdetails-notice > i {
+  margin-left: 10px;
+  color: rgb(65, 39, 0);
+}
+.pdetails-notice > div {
+  color: rgb(65, 39, 0);
+}
+.add-pdetails {
+  width: 97%;
+  height: 8%;
+  border: 1px solid black;
+  display: flex;
+  align-items: Center;
+  font-size: 18px;
+}
+.pdetails-form {
+  height: 65%;
+  width: 60%;
+}
+.pdetails-form-main {
+  width: 100%;
+  height: 100%;
+}
+fieldset {
+  border: 1px solid black;
+  margin-top: 4%;
+  width: 100%;
+  height: 50%;
+  /* margin-bottom: 15px; */
+  padding-left: 20px;
+}
+legend {
+  font-size: 35px;
+  color: rgb(39, 39, 39);
+  margin-bottom: 20px;
+}
+fieldset > label {
+  font-size: 22px;
+  color: rgb(39, 39, 39);
+  margin-right: 15px;
+}
+fieldset > input {
+  width: 200px;
+  height: 36px;
+  border-radius: 9px;
+  margin-bottom: 25px;
+  padding-left: 4px;
+}
+fieldset > input:focus {
+  background-color: black;
+  color: white;
+}
+.pdetails-subform {
+  display: flex;
+  flex-direction: column;
+}
+.pdetails-age {
+  display: flex;
+  height: 50px;
+}
+.label-age {
+  font-size: 25px;
+  color: rgb(39, 39, 39);
+  margin-right: 10px;
+}
+.input-age {
+  width: 55px;
+  height: 30px;
+  border-radius: 5px;
+  padding-left: 4px;
+}
+.input-age:focus {
+  background-color: black;
+  color: white;
+}
+.pdetails-national {
+  display: flex;
+  height: 50px;
+}
+.label-national {
+  font-size: 25px;
+  color: rgb(39, 39, 39);
+  margin-right: 10px;
+}
+.select-national {
+  width: 109px;
+  height: 34px;
+  border-radius: 5px;
+}
+.select-national:focus {
+  background-color: black;
+  color: white;
+}
