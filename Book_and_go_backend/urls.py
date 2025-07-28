@@ -18,8 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from user_acc import urls as userurls
 from Buses import urls as busesurls
+from trains import urls as trainurls
+from flights import urls as flighturls
+
 urlpatterns = [
     path("user/", include(userurls)),
     path('buses/', include(busesurls)),
+    path('flight/', include(flighturls)), 
+    path('train/', include(trainurls)),
     path('admin/', admin.site.urls),
 ]
