@@ -1,3 +1,28 @@
+<<<<<<< HEAD
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+=======
 # Bytecode
 __pycache__/
 *.py[cod]
@@ -19,3 +44,4 @@ staticfiles/
 # IDE/editor stuff
 .vscode/
 .idea/
+>>>>>>> 85cbca7fef5db8e52b6f9cd570980d49d3102ea7

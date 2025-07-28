@@ -1,0 +1,127 @@
+.flight-comp {
+  width: 100%;
+  height: 8%;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid black;
+  border-radius: 8px;
+  box-shadow: 0px 3px 5px 3px rgba(0, 0, 0, 0.128);
+  background-color: rgba(102, 102, 102, 0.548);
+  /* padding-left: 15px; */
+}
+.flight-comp:hover {
+  transform: scale(1.01);
+  cursor: pointer;
+}
+.airline-detail-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+  width: 25%;
+}
+.airline-icon {
+  width: 27%;
+  height: 30%;
+  padding-left: 20px;
+}
+.airline-detail {
+  height: 100%;
+  width: 70%;
+  color: rgb(223, 223, 223);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color:yellow;  */
+}
+.airline-name {
+  font-size: 30px;
+}
+.airline-number {
+  font-size: 15px;
+}
+.airline-detail-main2 {
+  width: 75%;
+  height: 100%;
+  display: flex;
+  align-items: baseline;
+  /* background-color:red;   */
+}
+.airline-departure {
+  width: 21%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color:white;  */
+}
+.airline-depart-time {
+  font-weight: bold;
+  font-size: 24px;
+}
+.airline-arrival {
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color:brown;  */
+}
+.airline-arrive-time {
+  font-weight: bold;
+  font-size: 24px;
+}
+.airline-duration {
+  width: 20%;
+  height: 30%;
+  display: flex;
+  justify-content: center;
+  font-size: 22px;
+  /* background-color:antiquewhite;  */
+}
+.trip-price-main {
+  width: 16%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color:yellow;  */
+  font-size: 26px;
+  /* background-color:blue;  */
+  padding-left: 7px;
+}
+.trip-price {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  height: 30%;
+}
+.currency {
+  font-size: 20px;
+}
+.flight-book {
+  width: 110px;
+  height: 42px;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  font-size: 20px;
+  margin-left: 13px;
+}
+.flight-book a {
+  text-decoration: none;
+  color:white; 
+}
+.flight-book:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.187);
+}
