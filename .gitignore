@@ -45,3 +45,30 @@ staticfiles/
 .vscode/
 .idea/
 >>>>>>> 85cbca7fef5db8e52b6f9cd570980d49d3102ea7
+# dependencies
+node_modules/
+
+# build output
+build/
+dist/
+
+# env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# debug / logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor / system files
+.DS_Store
+.vscode/
+.idea/
+
+# optional: if using TypeScript
+*.tsbuildinfo
