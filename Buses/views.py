@@ -1,25 +1,19 @@
 from Buses.serializers import BusSerializer, BookingSerializer, SeatsSerializer
 from Buses.models import Buses, Bookings, SeatsDetail
-
-from datetime import datetime, time
-
+from datetime import datetime
 from utility.functions import timeBasedData, priceBasedData, durationBasedData
-
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from rest_framework import exceptions
-
 from django.forms.models import model_to_dict
 from django.db import transaction
 
 class SourceDestOptions(APIView):
     serializer_class = BusSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication] 
     permission_classes = [IsAuthenticated]
     
     def get(self, request):

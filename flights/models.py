@@ -19,14 +19,14 @@ class flightPriceModel(models.Model):
         ('first-class', 'First Class'), 
         ('business', 'Business')
     ]
-    flight = models.ForeignKey(flightDetailModel, on_delete=models.CASCADE)
+    flight = models.ForeignKey(flightDetailModel, on_delete=models.CASCADE, related_name = "flight")
     type = models.CharField(max_length=11, choices=flightClass)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_seats = models.IntegerField()
 
 class BookingsModel(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    user = models.ForeignKey(user, on_delete=models.CASCADE, related_name="flight_booking")
     flight = models.ForeignKey(flightDetailModel, on_delete=models.CASCADE)
     flightPrice = models.ForeignKey(flightPriceModel, on_delete=models.CASCADE)
     Date_TOB = models.DateTimeField(auto_now_add=True)

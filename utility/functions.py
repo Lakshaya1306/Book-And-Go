@@ -61,19 +61,6 @@ def priceBasedData(minPrice, maxPrice, userMinPrice, userMaxPrice, data):
     Returns:
         queryset: list of those entries that have the price field values meeting user's input values
     """
-    # diff = maxPrice - minPrice
-    # change = (diff*20)/100
-    
-    # priceOptionList = [minPrice]
-    # sum = round(minPrice + change)
-    
-    # while sum <= maxPrice:
-    #     priceOptionList.append(sum)
-    #     sum = round(sum + change)
-        
-    # if maxPrice not in priceOptionList:
-    #     priceOptionList.append(maxPrice)
-    
     if userMinPrice and userMaxPrice:
         updData = data.filter(
             price__gte = userMinPrice,

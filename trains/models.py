@@ -21,9 +21,9 @@ class trainPriceModel(models.Model):
         ('1AC', '1AC'),
     ]
     
-    train = models.ForeignKey(trainDetailModel, on_delete=models.CASCADE)
-    type = models.CharField(max_length=11, choices=trainClass)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    train = models.ForeignKey(trainDetailModel, on_delete=models.CASCADE, related_name="train")
+    type = models.CharField(max_length=11, choices=trainClass, null=True)
+    price = models.DecimalField(max_digits=7, decimal_places=2, null = True)
     available_seats = models.IntegerField()
 
 class BookingsModel(models.Model):

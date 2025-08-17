@@ -1,3 +1,211 @@
-from django.shortcuts import render
+from trains.models import trainDetailModel, trainPriceModel, BookingsModel, PassengerDetailsModel
+from trains.serializers import TrainSerializer, BookingSerializer
+from datetime import datetime
+from utility.functions import timeBasedData, priceBasedData, durationBasedData
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from django.forms.models import model_to_dict
+from django.db import transaction
+from django.db.models import Subquery, OuterRef
 
-# Create your views here.
+class SourceDestOptions(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """This function takes in the request object and returns the list of sources and destination as per the records in DATABASE, useful for providing the options for dropdown menu 
+
+        Args:
+            request (): request object coming from the client's browser
+
+        Returns:
+            response: list of sources and destination
+        """
+        source = trainDetailModel.objects.distinct().values_list('source', flat=True)
+        destination = trainDetailModel.objects.distinct().values_list('destination', flat=True)
+        return Response({"status":"Success", 'data' : {'source':source, 'destination': destination}}, status=status.HTTP_200_OK)
+
+class TrainsData(APIView):
+    serializer_class = TrainSerializer 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """This function takes in the request object and applies the sorting or filtering functionality as per the query parameters sent by the user and in the end returns the entries which will be sorted or filtered as per the conditions
+        Args:
+            request (_type_): request object coming from the browser
+        Returns:
+            response: entries satisying the source and destination which will be either sorted or filtered or as it is. 
+        """
+        try:
+            source = request.query_params.get('source')
+            destination = request.query_params.get('destination')
+            date = request.query_params.get('date')
+            classType = request.query_params.get('class', 'sleeper')
+            request.session['type'] = classType
+            
+            if date:
+                request.session['date'] = date
+            else:
+                return Response({'status':'Failure', 'message':"Date is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+            if source and destination:
+                currTime = datetime.now().time()
+                SubQry = trainPriceModel.objects.filter(
+                    train = OuterRef('pk'),
+                    type = classType
+                )
+                
+                traindata = trainDetailModel.objects.filter(source = source, destination = destination
+                                                            ).annotate(
+                                                                price = Subquery(SubQry.values('price')[:1]),
+                                                                available_seats = Subquery(SubQry.values('available_seats')[:1])
+                                                            )
+                
+                isdata = traindata.exists()
+                if not isdata:
+                    return Response({'status':"Failure", 'message':"No Trains availabele"}, status = status.HTTP_204_NO_CONTENT)
+                
+                deptTimeRange = request.query_params.get('depttimerange')
+                arrivalTimeRange = request.query_params.get('arrivaltimerange')
+                sortVal = request.query_params.get('sorting')
+                userMinPrice = request.query_params.get('minprice')
+                userMaxPrice = request.query_params.get('maxprice')
+                userMinDuration = request.query_params.get('minduration')
+                userMaxDuration = request.query_params.get('maxduration')
+            
+                if sortVal:
+                    sortList = sortVal.split(",")
+                    traindata = traindata.order_by(*sortList)
+            
+                if deptTimeRange or arrivalTimeRange:
+                    traindata = timeBasedData(deptTimeRange, arrivalTimeRange, traindata)
+            
+                if userMinDuration or userMaxDuration:
+                    traindata = durationBasedData(userMinDuration, userMaxDuration, traindata)
+                
+                if userMinPrice or userMaxPrice:
+                    priceList = traindata.values_list('price',flat=True)
+                    minPrice = min(priceList)
+                    maxPrice = max(priceList)
+                
+                    traindata = priceBasedData(minPrice, maxPrice, userMinPrice, userMaxPrice, traindata)
+                    
+                if traindata:        
+                    paginator = PageNumberPagination()
+                    pageqs = paginator.paginate_queryset(traindata, request)
+                    serializer = TrainSerializer(pageqs, many = True, context = {'isdate':False})
+        
+                    return paginator.get_paginated_response(serializer.data)
+                else:
+                    return Response({'status':"Failure", "message":"No trains in desired duration"}, status = status.HTTP_204_NO_CONTENT)
+        
+            else:
+                return Response({'status':"Failure", "message":"source and destination can't be empty"}, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Exception as e:
+            return Response({'status':"Failure", 'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class trainInfo(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request, **kwargs):
+        """This function takes request object and kwargs as the input and with the id parameter fetches the record of the desired train 
+        Args:
+            request (rest_framework.request object):
+        Returns:
+            Response: Returns train Data for the specific train id 
+        """
+        try: 
+            SubQry = trainPriceModel.objects.filter(train_id = kwargs['id'], type = request.session.get('type'))
+            trainData = trainDetailModel.objects.annotate(price = Subquery(SubQry.values('price')[:1]), available_seats = Subquery(SubQry.values('available_seats')[:1])).get(id = kwargs['id'])
+            serializer = TrainSerializer(trainData, context = {'isdate':True,'date':request.session.get('date')})
+            
+        except trainDetailModel.DoesNotExist:
+            return Response({'status':"Failure", 'message':"train no longer exists"}, status=status.HTTP_404_NOT_FOUND)
+        
+        else:
+            return Response({"status":"Success!", 'data':serializer.data}, status=status.HTTP_200_OK)
+    
+    def post(self, request, **kwargs):
+        """This function fetches the data sent by the user, validates that data and if the data is valid then it saves the entry in the DB, and available seats are reduced after the record is saved 
+
+        Args:
+            request (rest_framework.request object): _description_
+
+        Returns:
+            rest_framework.response object: A JSON with the current status and corresponding message or error if any 
+        """
+        try:    
+            with transaction.atomic():
+                data = request.data
+                user = request.user
+                userId = user.id
+                trainId = kwargs['id']
+                trainPriceId = trainPriceModel.objects.get(train_id = trainId, type = request.session.get('type')).id
+                
+                data.update({'user':userId, 'train':trainId, 'trainPrice': trainPriceId})
+                
+                serializer = BookingSerializer(data = data)
+                if serializer.is_valid():
+                    print("hello world")
+                    serializer.save()
+                    trainInstance = trainPriceModel.objects.get(id = trainPriceId)
+                    no_of_seats = data.get('no_of_seats')
+                    
+                    trainInstance.available_seats = trainInstance.available_seats - no_of_seats
+                    trainInstance.save()
+                    
+                    return Response({'status':'Success', 'message':'Seat Booked Successfully'}, status = status.HTTP_200_OK)
+                else:
+                    print(serializer.errors)
+                    return Response({'status':'Failure', 'message':'Seat not booked please check the input credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            return Response({'status':'Failure', 'errors':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class BookInfo(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        """This function displays the booking details like billing details, passenger details, contact details using the user id of the authenticated user 
+
+        Args:
+            request (rest_framework.request object)
+
+        Returns:
+           rest_framework.response object: It sends json as a response containing the current status as well as the required data 
+        """
+        try:   
+            user = request.user
+            user_id = user.id
+        
+            booking_entry = BookingsModel.objects.filter(user = user_id).last()
+            booking_dict = model_to_dict(booking_entry, fields=['no_of_seats', 'contact', 'email', 'pincode', 'city', 'state', 'address'])
+        
+            trainId = booking_entry.train_id
+            trainPriceId = booking_entry.trainPrice_id
+            
+            SubQry = trainPriceModel.objects.filter(id = trainPriceId)
+            train_entry = trainDetailModel.objects.annotate(price = Subquery(SubQry.values('price')[:1])).get(id = trainId)
+            train_dict = TrainSerializer(train_entry, context = {'isdate':True, 'date':request.session.get('date')}).data
+        
+            bookingId = booking_entry.id 
+            passengerDetails = PassengerDetailsModel.objects.filter(booking = bookingId).values_list('first_name', 'middle_name', 'last_name', 'age', 'seat')
+        
+            passengerList = []
+            for entry in passengerDetails:
+                passengerList.append(list(entry))
+    
+            booking_data = [booking_dict, train_dict, passengerList]
+        
+        except Exception as e:
+            return Response({'status':"Failure", 'message':str(e)}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'status':"Success", 'data':booking_data}, status=status.HTTP_200_OK)
+        
